@@ -451,7 +451,7 @@ model.fit(X_t, y, epochs=2, batch_size=32, validation_split=0.1)
 
 
 
-After 1 epopch, our model does about as well as the shallow algorithms we tried above. However, our LSTM Network was able to achieve a validation accuracy of over 40% after only 3 epochs of training. It's likely that if we trained for more epochs or added in the rest of the data, our performance would improve even further (but our run time would get much, much longer). 
+After 1 epoch, our model does about as well as the shallow algorithms we tried above. However, our LSTM Network was able to achieve a validation accuracy of over 40% after only 3 epochs of training. It's likely that if we trained for more epochs or added in the rest of the data, our performance would improve even further (but our run time would get much, much longer). 
 
 It's common to embedding layers in LSTM networks, because both are special tools most commonly used for text data. The embedding layer creates it's own vectors based on the language in the text data it trains on, and then passes that information on to the LSTM network one word at a time. We'll learn more about LSTMs and other kinds of **_Recurrent Neural Networks_** in our next section!
 
