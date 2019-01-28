@@ -9,10 +9,12 @@ In this lesson, we'll use everything we've learned in this section to perform te
 
 You will be able to:
 
+- Effectively incorporate embedding layers into neural networks using Keras
+- Import and use pretrained word embeddings from popular pretrained models such as GloVe
+- Understand and explain the concept of a mean word embedding, and how this can be used to vectorize text at the sentence, paragraph, or document level
 
 
-
-### Getting Started
+## Getting Started
 
 Load the data, and all the frameworks and libraries. 
 
@@ -27,7 +29,7 @@ from gensim.models import word2vec
 
     C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\gensim\utils.py:1197: UserWarning: detected Windows; aliasing chunkize to chunkize_serial
       warnings.warn("detected Windows; aliasing chunkize to chunkize_serial")
-    
+
 
 Now, let's load our dataset. We'll be working with the same dataset we worked with in the previous lab for this section, which you'll find inside `News_Category_Dataset_v2.zip`.  **_Go into the repo and unzip this file before continuing._**
 
@@ -44,7 +46,7 @@ df.head()
 ```
 
     40171
-    
+
 
 
 
@@ -143,13 +145,13 @@ df['combined_text'] = df.headline + ' ' + df.short_description
 data = df['combined_text'].map(word_tokenize).values
 ```
 
-### Loading A Pretrained GloVe Model
+## Loading A Pretrained GloVe Model
 
 For this lab, we'll be loading the pretrained weights from **_GloVe_** (short for _Global Vectors for Word Representation_) from the [Stanford NLP Group](https://nlp.stanford.edu/projects/glove/).  These are commonly accepted as some of the best pre-trained word vectors available, and they're open source, so we can get them for free! Even the smallest file is still over 800 MB, so you'll you need to download this file manually. 
 
 Note that there are several different sizes of pretrained word vectors available for download from the page linked above--for our purposes, we'll only need to use the smallest one, which still contains pretrained word vectors for over 6 billion words and phrases! To download this file, follow the link above and select the file called `glove.6b.zip`.  For simplicity's sake, you can also start the download by clicking [this link](http://nlp.stanford.edu/data/glove.6B.zip).  We'll be using the GloVe file containing 100-dimensional word vectors for 6 billion words. Once you've downloaded the file, unzip it, and move the file `glove.6B.50d.txt` into the same directory as this jupyter notebook. 
 
-#### Getting the Total Vocabulary
+### Getting the Total Vocabulary
 
 Although our pretrained GloVe data contains vectors for 6 billion words and phrases, we don't need all of them. Instead, we only need the vectors for the words that appear in our dataset. If a word or phrase doesn't appear in our dataset, then there's no reason to waste memory storing the vector for that word or phrase. 
 
@@ -171,7 +173,7 @@ print("There are {} unique tokens in our dataset.".format(len(total_vocabulary))
 ```
 
     There are 71277 unique tokens in our dataset.
-    
+
 
 Now that we have gotten our total vocabulary, we can get the appropriate vectors out of the GloVe file. 
 
@@ -219,7 +221,7 @@ glove['school']
 
 Great--it worked!  Now that we've gotten the word vectors for every word in the  dataset, our next step is to combine all the vectors for a given headline into a **_Mean Embedding_** by finding the average of all the vectors in that headline. 
 
-### Creating Mean Word Embeddings
+## Creating Mean Word Embeddings
 
 For this step, it's worth the extra effort to write our own mean embedding vectorizer class, so that we can make use of pipelines from scikit-learn. Using pipelines will save us time and make our code a bit cleaner. 
 
@@ -248,7 +250,7 @@ class W2vVectorizer(object):
                    or [np.zeros(self.dimensions)], axis=0) for words in X])
 ```
 
-### Using Pipelines
+## Using Pipelines
 
 Since we've created a mean vectorizer class, we can pass this in as the first step in our pipeline, and then follow it up with the model we'll feed the data into for classification. 
 
@@ -308,7 +310,7 @@ scores = [(name, cross_val_score(model, data, target, cv=2).mean()) for name, mo
       FutureWarning)
     C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:460: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
       "this warning.", FutureWarning)
-    
+
 
 
 ```python
@@ -326,7 +328,7 @@ scores
 
 These scores may seem pretty low, but remember that there are 41 possible categories that headlines could be classified into. This means the naive accuracy rate (random guessing) would achieve an accuracy of just over 0.02! Our models have plenty of room for improvement, but they do work!
 
-### Deep Learning With Word Embeddings
+## Deep Learning With Word Embeddings
 
 To end this lab, we'll see an example of how we can use an **_Embedding Layer_** inside of a Deep Neural Network to compute our own word embedding vectors on the fly, right inside our model! 
 
@@ -424,7 +426,7 @@ model.summary()
     Trainable params: 2,578,791
     Non-trainable params: 0
     _________________________________________________________________
-    
+
 
 Finally, we can fit the model by passing in the data, our labels, and setting some other hyperparameters such as the batch size, the number of epochs to train for, and what percentage of the training data to use for validation data. 
 
@@ -442,7 +444,7 @@ model.fit(X_t, y, epochs=2, batch_size=32, validation_split=0.1)
     36153/36153 [==============================] - 184s 5ms/step - loss: 2.6305 - acc: 0.3169 - val_loss: 2.4481 - val_acc: 0.3616
     Epoch 2/2
     36153/36153 [==============================] - 184s 5ms/step - loss: 2.3492 - acc: 0.3757 - val_loss: 2.3228 - val_acc: 0.4089
-    
+
 
 
 
@@ -455,6 +457,6 @@ After 1 epoch, our model does about as well as the shallow algorithms we tried a
 
 It's common to embedding layers in LSTM networks, because both are special tools most commonly used for text data. The embedding layer creates it's own vectors based on the language in the text data it trains on, and then passes that information on to the LSTM network one word at a time. We'll learn more about LSTMs and other kinds of **_Recurrent Neural Networks_** in our next section!
 
-# Summary
+## Summary
 
 In this lab, we used everything we know about word embeddings to perform text classification, and then we built a Multi-Layer Perceptron model that incorporated a word embedding layer in it's own architecture!
