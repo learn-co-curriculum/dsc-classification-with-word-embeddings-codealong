@@ -1,5 +1,5 @@
 
-# Classification With Word Embeddings - Lab
+# Classification With Word Embeddings - Codealong
 
 ## Introduction
 
@@ -330,7 +330,7 @@ These scores may seem pretty low, but remember that there are 41 possible catego
 
 ## Deep Learning With Word Embeddings
 
-To end this lab, you'll see an example of how you can use an **_Embedding Layer_** inside of a Deep Neural Network to compute the own word embedding vectors on the fly, right inside the model! 
+To end, you'll see an example of how you can use an **_Embedding Layer_** inside of a Deep Neural Network to compute the own word embedding vectors on the fly, right inside the model! 
 
 Don't worry if you don't understand the code below just yet&mdash;you'll be learning all about **_Sequence Models_** like the one below in the next section!
 
@@ -459,4 +459,4 @@ It's common to add embedding layers in LSTM networks, because both are special t
 
 ## Summary
 
-In this lab, you used everything you know about word embeddings to perform text classification, and then you built a Multi-Layer Perceptron model that incorporated a word embedding layer in it's own architecture!
+In this codealong, you used everything you know about word embeddings to perform text classification, and then you built a Multi-Layer Perceptron model that incorporated a word embedding layer in it's own architecture!
