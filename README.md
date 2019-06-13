@@ -31,7 +31,7 @@ from gensim.models import word2vec
       warnings.warn("detected Windows; aliasing chunkize to chunkize_serial")
 
 
-Now, let's load our dataset. You'll be working with the same dataset you worked with in the previous lab for this section, which you'll find inside `News_Category_Dataset_v2.zip`.  **_Go into the repo and unzip this file before continuing._**
+Now, load the dataset. You'll be working with the same dataset you worked with in the previous lab for this section, which you'll find inside `News_Category_Dataset_v2.zip`.  **_Go into the repo and unzip this file before continuing._**
 
 Once you've unzipped this dataset, go ahead and use pandas to read the data stored in `News_Category_Dataset_v2.json` in the cell below. Then, display the head of the DataFrame to ensure everything worked correctly. 
 
@@ -129,11 +129,11 @@ df.head()
 
 
 
-Now, let's tranform our dataset as you did in the previous lab. 
+Now, let's tranform the dataset, as you did in the previous lab. 
 
 In the cell below:
 
-*  Store the column that will be our target, `category`, in the variable `target`.
+*  Store the column that will be the target, `category`, in the variable `target`.
 * Combine the `headline` and `short_description` columns and store the result in a column called `combined_text`. When concatenating these two columns, make sure they are separated by a space character (`' '`)!
 * Use the `combined_text` column's map function to use the `word_tokenize` function on every piece of text. 
 * Store the `.values` from the newly tokenized `combined_text` column inside the variable data
@@ -149,13 +149,13 @@ data = df['combined_text'].map(word_tokenize).values
 
 For this lab, you'll be loading the pretrained weights from **_GloVe_** (short for _Global Vectors for Word Representation_) from the [Stanford NLP Group](https://nlp.stanford.edu/projects/glove/).  These are commonly accepted as some of the best pre-trained word vectors available, and they're open source, so you can get them for free! Even the smallest file is still over 800 MB, so you'll you need to download this file manually. 
 
-Note that there are several different sizes of pretrained word vectors available for download from the page linked above&mdash;for our purposes, you'll only need to use the smallest one, which still contains pretrained word vectors for over 6 billion words and phrases! To download this file, follow the link above and select the file called `glove.6b.zip`.  For simplicity's sake, you can also start the download by clicking [this link](http://nlp.stanford.edu/data/glove.6B.zip).  You'll be using the GloVe file containing 100-dimensional word vectors for 6 billion words. Once you've downloaded the file, unzip it, and move the file `glove.6B.50d.txt` into the same directory as this jupyter notebook. 
+Note that there are several different sizes of pretrained word vectors available for download from the page linked above&mdash;for the purposes, you'll only need to use the smallest one, which still contains pretrained word vectors for over 6 billion words and phrases! To download this file, follow the link above and select the file called `glove.6b.zip`.  For simplicity's sake, you can also start the download by clicking [this link](http://nlp.stanford.edu/data/glove.6B.zip).  You'll be using the GloVe file containing 100-dimensional word vectors for 6 billion words. Once you've downloaded the file, unzip it, and move the file `glove.6B.50d.txt` into the same directory as this jupyter notebook. 
 
 ### Getting the Total Vocabulary
 
-Although our pretrained GloVe data contains vectors for 6 billion words and phrases, you don't need all of them. Instead, you only need the vectors for the words that appear in our dataset. If a word or phrase doesn't appear in our dataset, then there's no reason to waste memory storing the vector for that word or phrase. 
+Although the pretrained GloVe data contains vectors for 6 billion words and phrases, you don't need all of them. Instead, you only need the vectors for the words that appear in the dataset. If a word or phrase doesn't appear in the dataset, then there's no reason to waste memory storing the vector for that word or phrase. 
 
-This means that you need to start by computing the total vocabulary of our dataset. You can do this by adding every word in the dataset into a python `set` object. This is easy, since you've already tokenized each comment stored within `data`.
+This means that you need to start by computing the total vocabulary of the dataset. You can do this by adding every word in the dataset into a python `set` object. This is easy, since you've already tokenized each comment stored within `data`.
 
 In the cell below, add every token from every comment in data into a set, and store the set in the variable `total_vocabulary`.
 
@@ -169,15 +169,15 @@ total_vocabulary = set(word for headline in data for word in headline)
 
 ```python
 len(total_vocabulary)
-print("There are {} unique tokens in our dataset.".format(len(total_vocabulary)))
+print("There are {} unique tokens in the dataset.".format(len(total_vocabulary)))
 ```
 
     There are 71277 unique tokens in our dataset.
 
 
-Now that you have gotten our total vocabulary, you can get the appropriate vectors out of the GloVe file. 
+Now that you have gotten the total vocabulary, you can get the appropriate vectors out of the GloVe file. 
 
-For the sake of expediency, you've included the code to read the appropriate vectors from the file. The code includes comments to explain what it is doing. 
+For the sake of expediency, the code to read the appropriate vectors from the file is included below. The code includes comments to explain what it is doing. 
 
 
 ```python
@@ -191,9 +191,9 @@ with open('glove.6B.50d.txt', 'rb') as f:
             glove[word] = vector
 ```
 
-After running the cell above, you now have all of the words and their corresponding vocabulary stored within our dictionary, `glove`, as key/value pairs. 
+After running the cell above, you now have all of the words and their corresponding vocabulary stored within the dictionary, `glove`, as key/value pairs. 
 
-Let's double-check that everything worked by getting the vector for a word from our `glove` dictionary. It's probably safe to assume that the word 'school' will be mentioned in at least one news headline, so let's get the vector for it. 
+Double-check that everything worked by getting the vector for a word from the `glove` dictionary. It's probably safe to assume that the word 'school' will be mentioned in at least one news headline, so let's get the vector for it. 
 
 Get the vector for the word `'school'` from `glove` in the cell below. 
 
@@ -219,13 +219,13 @@ glove['school']
 
 
 
-Great&mdash;it worked!  Now that you've gotten the word vectors for every word in the  dataset, our next step is to combine all the vectors for a given headline into a **_Mean Embedding_** by finding the average of all the vectors in that headline. 
+Great&mdash;it worked!  Now that you've gotten the word vectors for every word in the  dataset, the next step is to combine all the vectors for a given headline into a **_Mean Embedding_** by finding the average of all the vectors in that headline. 
 
 ## Creating Mean Word Embeddings
 
-For this step, it's worth the extra effort to write our own mean embedding vectorizer class, so that you can make use of pipelines from scikit-learn. Using pipelines will save us time and make our code a bit cleaner. 
+For this step, it's worth the extra effort to write your own mean embedding vectorizer class, so that you can make use of pipelines from scikit-learn. Using pipelines will save us time and make the code a bit cleaner. 
 
-We've provided the code the mean embedding vectorizer class, with comments explaining what each step is doing. Take a minute to examine it and try to understand what the code is doing. 
+The code for a mean embedding vectorizer class is included below, with comments explaining what each step is doing. Take a minute to examine it and try to understand what the code is doing. 
 
 
 ```python
@@ -252,7 +252,7 @@ class W2vVectorizer(object):
 
 ## Using Pipelines
 
-Since you've created a mean vectorizer class, you can pass this in as the first step in our pipeline, and then follow it up with the model you'll feed the data into for classification. 
+Since you've created a mean vectorizer class, you can pass this in as the first step in the pipeline, and then follow it up with the model you'll feed the data into for classification. 
 
 Run the cell below to create pipeline objects that make use of the mean embedding vectorizer that you built above. 
 
@@ -281,7 +281,7 @@ models = [('Random Forest', rf),
           ("Logistic Regression", lr)]
 ```
 
-We can then use the list you've created above, as well as the `cross_val_score` function from scikit-learn to train all the models, and store their cross validation score in an array. 
+You can then use the list you've created above, as well as the `cross_val_score` function from scikit-learn to train all the models, and store their cross validation score in an array. 
 
 **_NOTE:_** Running the cell below may take a few minutes!
 
@@ -330,9 +330,9 @@ These scores may seem pretty low, but remember that there are 41 possible catego
 
 ## Deep Learning With Word Embeddings
 
-To end this lab, you'll see an example of how you can use an **_Embedding Layer_** inside of a Deep Neural Network to compute our own word embedding vectors on the fly, right inside our model! 
+To end this lab, you'll see an example of how you can use an **_Embedding Layer_** inside of a Deep Neural Network to compute the own word embedding vectors on the fly, right inside the model! 
 
-Don't worry if you don't understand the code below just yet&mdash;we'll be learning all about **_Sequence Models_** like the one below in our next section!
+Don't worry if you don't understand the code below just yet&mdash;you'll be learning all about **_Sequence Models_** like the one below in the next section!
 
 Run the cells below.
 
@@ -348,16 +348,16 @@ from keras import initializers, regularizers, constraints, optimizers, layers
 from keras.preprocessing import text, sequence
 ```
 
-Next, you'll convert our labels to a one-hot encoded format.
+Next, you'll convert the labels to a one-hot encoded format.
 
 
 ```python
 y = pd.get_dummies(target).values
 ```
 
-Now, you'll preprocess our text data. To do this, you start from the step where you combined the headlines and short description. You'll then use Keras's preprocessing tools to tokenize each example, convert them to sequences, and then pad the sequences so they're all the same length. 
+Now, you'll preprocess the text data. To do this, you start from the step where you combined the headlines and short description. You'll then use Keras's preprocessing tools to tokenize each example, convert them to sequences, and then pad the sequences so they're all the same length. 
 
-Note how during the tokenization step, you set a parameter to tell the tokenizer to limit our overall vocabulary size to the `20000` most important words. 
+Note how during the tokenization step, you set a parameter to tell the tokenizer to limit the overall vocabulary size to the `20000` most important words. 
 
 
 ```python
@@ -367,11 +367,11 @@ list_tokenized_headlines = tokenizer.texts_to_sequences(df.combined_text)
 X_t = sequence.pad_sequences(list_tokenized_headlines, maxlen=100)
 ```
 
-Now, you'll construct our neural network. Notice how the **_Embedding Layer_** comes second, after the input layer. In the Embedding Layer, you specify the size you want our word vectors to be, as well as the size of the embedding space itself.  The embedding size you specified is 128, and the size of the embedding space is best as the size of the total vocabulary that we're using. Since you limited the vocab to 20000, that's the size you choose for the embedding layer. 
+Now, construct the neural network. Notice how the **_Embedding Layer_** comes second, after the input layer. In the Embedding Layer, you specify the size you want the word vectors to be, as well as the size of the embedding space itself.  The embedding size you specified is 128, and the size of the embedding space is best as the size of the total vocabulary that we're using. Since you limited the vocab to 20000, that's the size you choose for the embedding layer. 
 
 Once the data has passed through an embedding layer, you feed this data into an LSTM layer, followed by a Dense layer, followed by output layer. You also add some Dropout layers after each of these layers, to help fight overfitting.
 
-Our output layer is a Dense layer with 41 neurons, which corresponds to the 41 possible classes in our labels. You set the activation function for this output layer to `'softmax'`, so that our network will output a vector of predictions, where each element's value corresponds to the percentage chance that the example is the class that corresponds to that element, and where the sum of all elements in the output vector is 1. 
+Our output layer is a Dense layer with 41 neurons, which corresponds to the 41 possible classes in the labels. You set the activation function for this output layer to `'softmax'`, so that the network will output a vector of predictions, where each element's value corresponds to the percentage chance that the example is the class that corresponds to that element, and where the sum of all elements in the output vector is 1. 
 
 
 ```python
@@ -389,14 +389,14 @@ x = Dense(41, activation='softmax')(x)
 model = Model(inputs=input_, outputs=x)
 ```
 
-Once you have designed our model, you still have to compile it, and provide important parameters such as the loss function to use (`'categorical_crossentropy'`, since this is a mutliclass classification problem), and the optimizer to use. 
+Once you have designed the model, you still have to compile it, and provide important parameters such as the loss function to use (`'categorical_crossentropy'`, since this is a mutliclass classification problem), and the optimizer to use. 
 
 
 ```python
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 ```
 
-After compiling the model, you quickly check the summary of the model to see what our model looks like, and make sure the output shapes line up with what you expect. 
+After compiling the model, you quickly check the summary of the model to see what the model looks like, and make sure the output shapes line up with what you expect. 
 
 
 ```python
@@ -428,7 +428,7 @@ model.summary()
     _________________________________________________________________
 
 
-Finally, you can fit the model by passing in the data, our labels, and setting some other hyperparameters such as the batch size, the number of epochs to train for, and what percentage of the training data to use for validation data. 
+Finally, you can fit the model by passing in the data, the labels, and setting some other hyperparameters such as the batch size, the number of epochs to train for, and what percentage of the training data to use for validation data. 
 
 If trained for 3 epochs, you'll find the model achieves a validation accuracy of almost 41%. 
 
@@ -453,9 +453,9 @@ model.fit(X_t, y, epochs=2, batch_size=32, validation_split=0.1)
 
 
 
-After 1 epoch, our model does about as well as the shallow algorithms you tried above. However, our LSTM Network was able to achieve a validation accuracy of over 40% after only 3 epochs of training. It's likely that if you trained for more epochs or added in the rest of the data, our performance would improve even further (but our run time would get much, much longer). 
+After 1 epoch, the model does about as well as the shallow algorithms you tried above. However, the LSTM Network was able to achieve a validation accuracy of over 40% after only 3 epochs of training. It's likely that if you trained for more epochs or added in the rest of the data, the performance would improve even further (but the run time would get much, much longer). 
 
-It's common to embedding layers in LSTM networks, because both are special tools most commonly used for text data. The embedding layer creates it's own vectors based on the language in the text data it trains on, and then passes that information on to the LSTM network one word at a time. You'll learn more about LSTMs and other kinds of **_Recurrent Neural Networks_** in our next section!
+It's common to add embedding layers in LSTM networks, because both are special tools most commonly used for text data. The embedding layer creates it's own vectors based on the language in the text data it trains on, and then passes that information on to the LSTM network one word at a time. You'll learn more about LSTMs and other kinds of **_Recurrent Neural Networks_** in the next section!
 
 ## Summary
 
