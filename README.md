@@ -129,7 +129,7 @@ df.head()
 
 
 
-Now, let's tranform the dataset, as you did in the previous lab. 
+Now, let's transform the dataset, as you did in the previous lab. 
 
 In the cell below:
 
@@ -389,7 +389,7 @@ x = Dense(41, activation='softmax')(x)
 model = Model(inputs=input_, outputs=x)
 ```
 
-Once you have designed the model, you still have to compile it, and provide important parameters such as the loss function to use (`'categorical_crossentropy'`, since this is a mutliclass classification problem), and the optimizer to use. 
+Once you have designed the model, you still have to compile it, and provide important parameters such as the loss function to use (`'categorical_crossentropy'`, since this is a multiclass classification problem), and the optimizer to use. 
 
 
 ```python
