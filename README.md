@@ -177,7 +177,7 @@ print("There are {} unique tokens in the dataset.".format(len(total_vocabulary))
 
 Now that you have gotten the total vocabulary, you can get the appropriate vectors out of the GloVe file. 
 
-For the sake of expediency, the code to read the appropriate vectors from the file is included below. The code includes comments to explain what it is doing. 
+For the sake of expediency, the code to read the appropriate vectors from the file is included below. 
 
 
 ```python
