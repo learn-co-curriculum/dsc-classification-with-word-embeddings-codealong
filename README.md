@@ -21,15 +21,13 @@ Load the data, and all the frameworks and libraries.
 
 ```python
 import pandas as pd
+
 import numpy as np
 np.random.seed(0)
+
 from nltk import word_tokenize
 from gensim.models import word2vec
 ```
-
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\gensim\utils.py:1197: UserWarning: detected Windows; aliasing chunkize to chunkize_serial
-      warnings.warn("detected Windows; aliasing chunkize to chunkize_serial")
-
 
 Now, load the dataset. You'll be working with the same dataset you worked with in the previous lab for this section, which you'll find inside `News_Category_Dataset_v2.zip`.  **_Go into the repo and unzip this file before continuing._**
 
@@ -79,49 +77,49 @@ df.head()
   </thead>
   <tbody>
     <tr>
-      <th>20315</th>
-      <td>Janis Ian, ContributorSongwriter, author, perf...</td>
+      <th>23341</th>
+      <td></td>
       <td>POLITICS</td>
-      <td>2017-07-28</td>
-      <td>This Is Not Government. It's Savagery.</td>
-      <td>https://www.huffingtonpost.com/entry/this-is-n...</td>
-      <td>I want to move to Hawaii solely to be able to ...</td>
+      <td>2017-06-21</td>
+      <td>Jared Kushner Arrives In Israel For Whirlwind ...</td>
+      <td>https://www.huffingtonpost.com/entry/jared-kus...</td>
+      <td>It remains unclear what approach the White Hou...</td>
     </tr>
     <tr>
-      <th>105941</th>
-      <td>Amanda Terkel</td>
-      <td>POLITICS</td>
-      <td>2014-11-23</td>
-      <td>GOP Senator Urges Republicans To Move On From ...</td>
-      <td>https://www.huffingtonpost.com/entry/jeff-flak...</td>
+      <th>100639</th>
+      <td>JamesMichael Nichols</td>
+      <td>QUEER VOICES</td>
+      <td>2015-01-23</td>
+      <td>'The Best Thing Is To See How Much Love Can Do...</td>
+      <td>https://www.huffingtonpost.com/entry/stacy-hol...</td>
       <td></td>
     </tr>
     <tr>
-      <th>173890</th>
-      <td>Marcus Samuelsson, Contributor\nAward-Winning ...</td>
-      <td>FOOD &amp; DRINK</td>
-      <td>2012-11-14</td>
-      <td>10 Recipes, 10 Ways To Deliciously Use Your Th...</td>
-      <td>https://www.huffingtonpost.com/entry/10-recipe...</td>
-      <td>My 10 favorite ways to make sure you're not wa...</td>
+      <th>184179</th>
+      <td>Party Earth, Contributor\nContributor</td>
+      <td>TRAVEL</td>
+      <td>2012-07-25</td>
+      <td>Berlin's Nightlife: 48 Hours You Might Not Rem...</td>
+      <td>https://www.huffingtonpost.com/entry/berlins-n...</td>
+      <td>If you think spending time boozing and schmooz...</td>
     </tr>
     <tr>
-      <th>177657</th>
-      <td>Michelle Manetti</td>
-      <td>HOME &amp; LIVING</td>
-      <td>2012-10-04</td>
-      <td>Doorless Refrigerator Wall By Electrolux Desig...</td>
-      <td>https://www.huffingtonpost.com/entry/doorless-...</td>
-      <td>Hey, here's a way to subtract a step between y...</td>
+      <th>136649</th>
+      <td>Shelly Ulaj, Contributor\nFounder and CEO of W...</td>
+      <td>DIVORCE</td>
+      <td>2013-12-13</td>
+      <td>Finding Strength to Stand on Your Own</td>
+      <td>https://www.huffingtonpost.com/entry/finding-s...</td>
+      <td>I was so used to being taken care of by family...</td>
     </tr>
     <tr>
-      <th>97563</th>
-      <td>Jon Hartley, ContributorWorld Economic Forum G...</td>
-      <td>BUSINESS</td>
-      <td>2015-02-27</td>
-      <td>The Emerging Markets Housing Bubble</td>
-      <td>https://www.huffingtonpost.com/entry/the-emerg...</td>
-      <td>While in most advanced economies, housing pric...</td>
+      <th>196185</th>
+      <td>Ellie Krupnick</td>
+      <td>STYLE &amp; BEAUTY</td>
+      <td>2012-03-18</td>
+      <td>Alexander Wang Lawsuit Will Move To Federal Co...</td>
+      <td>https://www.huffingtonpost.com/entry/alexander...</td>
+      <td>Representatives of Alexander Wang's brand cont...</td>
     </tr>
   </tbody>
 </table>
@@ -149,7 +147,7 @@ data = df['combined_text'].map(word_tokenize).values
 
 For this lab, you'll be loading the pretrained weights from **_GloVe_** (short for _Global Vectors for Word Representation_) from the [Stanford NLP Group](https://nlp.stanford.edu/projects/glove/).  These are commonly accepted as some of the best pre-trained word vectors available, and they're open source, so you can get them for free! Even the smallest file is still over 800 MB, so you'll you need to download this file manually. 
 
-Note that there are several different sizes of pretrained word vectors available for download from the page linked above&mdash;for the purposes, you'll only need to use the smallest one, which still contains pretrained word vectors for over 6 billion words and phrases! To download this file, follow the link above and select the file called `glove.6b.zip`.  For simplicity's sake, you can also start the download by clicking [this link](http://nlp.stanford.edu/data/glove.6B.zip).  You'll be using the GloVe file containing 100-dimensional word vectors for 6 billion words. Once you've downloaded the file, unzip it, and move the file `glove.6B.50d.txt` into the same directory as this jupyter notebook. 
+Note that there are several different sizes of pretrained word vectors available for download from the page linked above&mdash;for the purposes, you'll only need to use the smallest one, which still contains pretrained word vectors for over 6 billion words and phrases! To download this file, follow the link above and select the file called `glove.6b.zip`.  For simplicity's sake, you can also start the download by clicking [this link](http://nlp.stanford.edu/data/glove.6B.zip).  You'll be using the GloVe file containing 50-dimensional word vectors for 6 billion words. Once you've downloaded the file, unzip it, and move the file `glove.6B.50d.txt` into the same directory as this jupyter notebook. 
 
 ### Getting the Total Vocabulary
 
@@ -172,7 +170,7 @@ len(total_vocabulary)
 print("There are {} unique tokens in the dataset.".format(len(total_vocabulary)))
 ```
 
-    There are 71277 unique tokens in our dataset.
+    There are 71173 unique tokens in the dataset.
 
 
 Now that you have gotten the total vocabulary, you can get the appropriate vectors out of the GloVe file. 
@@ -239,8 +237,8 @@ class W2vVectorizer(object):
         else:
             self.dimensions = len(w2v[next(iter(glove))])
     
-    # Note from Mike: Even though it doesn't do anything, it's required that this object implement a fit method or else
-    # It can't be used in a sklearn Pipeline. 
+    # Note: Even though it doesn't do anything, it's required that this object implement a fit method or else
+    # it can't be used in a scikit-learn pipeline. 
     def fit(self, X, y):
         return self
             
@@ -287,28 +285,29 @@ You can then use the list you've created above, as well as the `cross_val_score`
 
 
 ```python
+# ⏰ This cell may take several minutes to run
 scores = [(name, cross_val_score(model, data, target, cv=2).mean()) for name, model, in models]
 ```
 
     [Parallel(n_jobs=1)]: Using backend SequentialBackend with 1 concurrent workers.
-    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:   19.8s finished
+    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:   15.6s finished
     [Parallel(n_jobs=1)]: Using backend SequentialBackend with 1 concurrent workers.
-    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:    1.3s finished
+    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:    0.6s finished
     [Parallel(n_jobs=1)]: Using backend SequentialBackend with 1 concurrent workers.
-    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:   21.5s finished
+    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:   15.8s finished
     [Parallel(n_jobs=1)]: Using backend SequentialBackend with 1 concurrent workers.
-    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:    1.4s finished
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\sklearn\svm\base.py:196: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:    0.6s finished
+    //anaconda3/envs/learn-env/lib/python3.6/site-packages/sklearn/svm/base.py:193: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
       "avoid this warning.", FutureWarning)
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\sklearn\svm\base.py:196: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+    //anaconda3/envs/learn-env/lib/python3.6/site-packages/sklearn/svm/base.py:193: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
       "avoid this warning.", FutureWarning)
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:433: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+    //anaconda3/envs/learn-env/lib/python3.6/site-packages/sklearn/linear_model/logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
       FutureWarning)
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:460: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
+    //anaconda3/envs/learn-env/lib/python3.6/site-packages/sklearn/linear_model/logistic.py:469: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
       "this warning.", FutureWarning)
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:433: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+    //anaconda3/envs/learn-env/lib/python3.6/site-packages/sklearn/linear_model/logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
       FutureWarning)
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:460: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
+    //anaconda3/envs/learn-env/lib/python3.6/site-packages/sklearn/linear_model/logistic.py:469: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
       "this warning.", FutureWarning)
 
 
@@ -320,9 +319,9 @@ scores
 
 
 
-    [('Random Forest', 0.3195585321385761),
-     ('Support Vector Machine', 0.3025076172472023),
-     ('Logistic Regression', 0.3280980534586512)]
+    [('Random Forest', 0.31960910174587964),
+     ('Support Vector Machine', 0.3036012008096788),
+     ('Logistic Regression', 0.3255087322734529)]
 
 
 
@@ -343,10 +342,13 @@ First, you'll import everything you'll need from Keras.
 from keras.preprocessing.sequence import pad_sequences
 from keras.layers import Input, Dense, LSTM, Embedding
 from keras.layers import Dropout, Activation, Bidirectional, GlobalMaxPool1D
-from keras.models import Model
+from keras.models import Sequential
 from keras import initializers, regularizers, constraints, optimizers, layers
 from keras.preprocessing import text, sequence
 ```
+
+    Using TensorFlow backend.
+
 
 Next, you'll convert the labels to a one-hot encoded format.
 
@@ -367,7 +369,7 @@ list_tokenized_headlines = tokenizer.texts_to_sequences(df.combined_text)
 X_t = sequence.pad_sequences(list_tokenized_headlines, maxlen=100)
 ```
 
-Now, construct the neural network. Notice how the **_Embedding Layer_** comes second, after the input layer. In the Embedding Layer, you specify the size you want the word vectors to be, as well as the size of the embedding space itself.  The embedding size you specified is 128, and the size of the embedding space is best as the size of the total vocabulary that we're using. Since you limited the vocab to 20000, that's the size you choose for the embedding layer. 
+Now, construct the neural network. In the Embedding Layer, you specify the size you want the word vectors to be, as well as the size of the embedding space itself.  The embedding size you specified is 128, and the size of the embedding space is best as the size of the total vocabulary that we're using. Since you limited the vocabulary size to 20000, that's the size you choose for the embedding layer. 
 
 Once the data has passed through an embedding layer, you feed this data into an LSTM layer, followed by a Dense layer, followed by output layer. You also add some Dropout layers after each of these layers, to help fight overfitting.
 
@@ -375,18 +377,19 @@ Our output layer is a Dense layer with 41 neurons, which corresponds to the 41 p
 
 
 ```python
-embedding_size = 128
-input_ = Input(shape=(100,))
-x = Embedding(20000, embedding_size)(input_)
-x = LSTM(25, return_sequences=True)(x)
-x = GlobalMaxPool1D()(x)
-x = Dropout(0.5)(x)
-x = Dense(50, activation='relu')(x)
-x = Dropout(0.5)(x)
-# There are 41 different possible classes, so we use 41 neurons in our output layer
-x = Dense(41, activation='softmax')(x)
+model = Sequential()
+```
 
-model = Model(inputs=input_, outputs=x)
+
+```python
+embedding_size = 128
+model.add(Embedding(20000, embedding_size))
+model.add(LSTM(25, return_sequences=True))
+model.add(GlobalMaxPool1D())
+model.add(Dropout(0.5))
+model.add(Dense(50, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(41, activation='softmax'))
 ```
 
 Once you have designed the model, you still have to compile it, and provide important parameters such as the loss function to use (`'categorical_crossentropy'`, since this is a multiclass classification problem), and the optimizer to use. 
@@ -406,21 +409,19 @@ model.summary()
     _________________________________________________________________
     Layer (type)                 Output Shape              Param #   
     =================================================================
-    input_3 (InputLayer)         (None, 100)               0         
+    embedding_1 (Embedding)      (None, None, 128)         2560000   
     _________________________________________________________________
-    embedding_3 (Embedding)      (None, 100, 128)          2560000   
-    _________________________________________________________________
-    lstm_3 (LSTM)                (None, 100, 25)           15400     
+    lstm_1 (LSTM)                (None, None, 25)          15400     
     _________________________________________________________________
     global_max_pooling1d_1 (Glob (None, 25)                0         
     _________________________________________________________________
-    dropout_5 (Dropout)          (None, 25)                0         
+    dropout_1 (Dropout)          (None, 25)                0         
     _________________________________________________________________
-    dense_5 (Dense)              (None, 50)                1300      
+    dense_1 (Dense)              (None, 50)                1300      
     _________________________________________________________________
-    dropout_6 (Dropout)          (None, 50)                0         
+    dropout_2 (Dropout)          (None, 50)                0         
     _________________________________________________________________
-    dense_6 (Dense)              (None, 41)                2091      
+    dense_2 (Dense)              (None, 41)                2091      
     =================================================================
     Total params: 2,578,791
     Trainable params: 2,578,791
@@ -430,30 +431,33 @@ model.summary()
 
 Finally, you can fit the model by passing in the data, the labels, and setting some other hyperparameters such as the batch size, the number of epochs to train for, and what percentage of the training data to use for validation data. 
 
-If trained for 3 epochs, you'll find the model achieves a validation accuracy of almost 41%. 
+If trained for three epochs, you'll find the model achieves a validation accuracy around 40%. 
 
-Run the cell below for 1 epoch. Note that this is a large network, so the training will take some time!
+Run the cell below for three epochs. Note that this is a large network, so the training will take some time!
 
 
 ```python
-model.fit(X_t, y, epochs=2, batch_size=32, validation_split=0.1)
+# ⏰ This cell may take several minutes to run
+model.fit(X_t, y, epochs=3, batch_size=32, validation_split=0.1)
 ```
 
     Train on 36153 samples, validate on 4018 samples
-    Epoch 1/2
-    36153/36153 [==============================] - 184s 5ms/step - loss: 2.6305 - acc: 0.3169 - val_loss: 2.4481 - val_acc: 0.3616
-    Epoch 2/2
-    36153/36153 [==============================] - 184s 5ms/step - loss: 2.3492 - acc: 0.3757 - val_loss: 2.3228 - val_acc: 0.4089
+    Epoch 1/3
+    36153/36153 [==============================] - 97s 3ms/step - loss: 3.1289 - acc: 0.2131 - val_loss: 2.6295 - val_acc: 0.3342
+    Epoch 2/3
+    36153/36153 [==============================] - 94s 3ms/step - loss: 2.5276 - acc: 0.3542 - val_loss: 2.3489 - val_acc: 0.4052
+    Epoch 3/3
+    36153/36153 [==============================] - 94s 3ms/step - loss: 2.2191 - acc: 0.4165 - val_loss: 2.2006 - val_acc: 0.4368
 
 
 
 
 
-    <keras.callbacks.History at 0x1d757632f98>
+    <keras.callbacks.History at 0x1a47a28908>
 
 
 
-After 1 epoch, the model does about as well as the shallow algorithms you tried above. However, the LSTM Network was able to achieve a validation accuracy of over 40% after only 3 epochs of training. It's likely that if you trained for more epochs or added in the rest of the data, the performance would improve even further (but the run time would get much, much longer). 
+After two epochs, the model performs as well as the shallow algorithms you tried above. However, the LSTM Network was able to achieve a validation accuracy around 40% after only three epochs of training. It's likely that if you trained for more epochs or added in the rest of the data, the performance would improve even further (but the run time would get much, much longer). 
 
 It's common to add embedding layers in LSTM networks, because both are special tools most commonly used for text data. The embedding layer creates it's own vectors based on the language in the text data it trains on, and then passes that information on to the LSTM network one word at a time. You'll learn more about LSTMs and other kinds of **_Recurrent Neural Networks_** in the next section!
 
