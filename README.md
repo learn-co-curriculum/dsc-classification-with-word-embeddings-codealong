@@ -9,14 +9,13 @@ In this lesson, you'll use everything you've learned in this section to perform 
 
 You will be able to:
 
-- Effectively incorporate embedding layers into neural networks using Keras
-- Import and use pretrained word embeddings from popular pretrained models such as GloVe
-- Understand and explain the concept of a mean word embedding, and how this can be used to vectorize text at the sentence, paragraph, or document level
+- Use pretrained word embeddings from popular pretrained models such as GloVe 
+- Incorporate embedding layers into neural networks using Keras 
 
 
 ## Getting Started
 
-Load the data, and all the frameworks and libraries. 
+Load the data, and all the libraries and functions. 
 
 
 ```python
@@ -31,7 +30,7 @@ from gensim.models import word2vec
 
 Now, load the dataset. You'll be working with the same dataset you worked with in the previous lab for this section, which you'll find inside `News_Category_Dataset_v2.zip`.  **_Go into the repo and unzip this file before continuing._**
 
-Once you've unzipped this dataset, go ahead and use pandas to read the data stored in `News_Category_Dataset_v2.json` in the cell below. Then, display the head of the DataFrame to ensure everything worked correctly. 
+Once you've unzipped this dataset, go ahead and use `pandas` to read the data stored in `'News_Category_Dataset_v2.json'` in the cell below.  
 
 **_NOTE:_** When using the `pd.read_json()` function, be sure to include the `lines=True` parameter, or else it will crash!
 
@@ -131,29 +130,29 @@ Now, let's transform the dataset, as you did in the previous lab.
 
 In the cell below:
 
-*  Store the column that will be the target, `category`, in the variable `target`.
-* Combine the `headline` and `short_description` columns and store the result in a column called `combined_text`. When concatenating these two columns, make sure they are separated by a space character (`' '`)!
-* Use the `combined_text` column's map function to use the `word_tokenize` function on every piece of text. 
-* Store the `.values` from the newly tokenized `combined_text` column inside the variable data
+*  Store the column that will be the target, `'category'`, in the variable `target` 
+* Combine the `'headline'` and `'short_description'` columns and store the result in a column called `'combined_text'`. When concatenating these two columns, make sure they are separated by a space character (`' '`) 
+* Use the `'combined_text'` column's `.map()` method to use the `word_tokenize` function on every piece of text  
+* Store the `.values` attribute from the newly tokenized `'combined_text'` column in the variable `data` 
 
 
 ```python
-target = df.category
-df['combined_text'] = df.headline + ' ' + df.short_description
+target = df['category']
+df['combined_text'] = df['headline'] + ' ' + df['short_description']
 data = df['combined_text'].map(word_tokenize).values
 ```
 
 ## Loading A Pretrained GloVe Model
 
-For this lab, you'll be loading the pretrained weights from **_GloVe_** (short for _Global Vectors for Word Representation_) from the [Stanford NLP Group](https://nlp.stanford.edu/projects/glove/).  These are commonly accepted as some of the best pre-trained word vectors available, and they're open source, so you can get them for free! Even the smallest file is still over 800 MB, so you'll you need to download this file manually. 
+For this lab, you'll be loading the pretrained weights from **_GloVe_** (short for _Global Vectors for Word Representation_ ) from the [Stanford NLP Group](https://nlp.stanford.edu/projects/glove/). These are commonly accepted as some of the best pre-trained word vectors available, and they're open source, so you can get them for free! Even the smallest file is still over 800 MB, so you'll you need to download this file manually. 
 
-Note that there are several different sizes of pretrained word vectors available for download from the page linked above&mdash;for the purposes, you'll only need to use the smallest one, which still contains pretrained word vectors for over 6 billion words and phrases! To download this file, follow the link above and select the file called `glove.6b.zip`.  For simplicity's sake, you can also start the download by clicking [this link](http://nlp.stanford.edu/data/glove.6B.zip).  You'll be using the GloVe file containing 50-dimensional word vectors for 6 billion words. Once you've downloaded the file, unzip it, and move the file `glove.6B.50d.txt` into the same directory as this jupyter notebook. 
+Note that there are several different sizes of pretrained word vectors available for download from the page linked above -- for the purposes of this lesson, you'll only need to use the smallest one, which still contains pretrained word vectors for over 6 billion words and phrases! To download this file, follow the link above and select the file called `glove.6b.zip`.  For simplicity's sake, you can also start the download by clicking [this link](http://nlp.stanford.edu/data/glove.6B.zip).  You'll be using the GloVe file containing 50-dimensional word vectors for 6 billion words. Once you've downloaded the file, unzip it, and move the file `glove.6B.50d.txt` into the same directory as this Jupyter notebook. 
 
 ### Getting the Total Vocabulary
 
 Although the pretrained GloVe data contains vectors for 6 billion words and phrases, you don't need all of them. Instead, you only need the vectors for the words that appear in the dataset. If a word or phrase doesn't appear in the dataset, then there's no reason to waste memory storing the vector for that word or phrase. 
 
-This means that you need to start by computing the total vocabulary of the dataset. You can do this by adding every word in the dataset into a python `set` object. This is easy, since you've already tokenized each comment stored within `data`.
+This means that you need to start by computing the total vocabulary of the dataset. You can do this by adding every word in the dataset into a Python `set` object. This is easy, since you've already tokenized each comment stored within `data`.
 
 In the cell below, add every token from every comment in data into a set, and store the set in the variable `total_vocabulary`.
 
@@ -167,15 +166,13 @@ total_vocabulary = set(word for headline in data for word in headline)
 
 ```python
 len(total_vocabulary)
-print("There are {} unique tokens in the dataset.".format(len(total_vocabulary)))
+print('There are {} unique tokens in the dataset.'.format(len(total_vocabulary)))
 ```
 
     There are 71173 unique tokens in the dataset.
 
 
 Now that you have gotten the total vocabulary, you can get the appropriate vectors out of the GloVe file. 
-
-For the sake of expediency, the code to read the appropriate vectors from the file is included below. 
 
 
 ```python
@@ -191,7 +188,7 @@ with open('glove.6B.50d.txt', 'rb') as f:
 
 After running the cell above, you now have all of the words and their corresponding vocabulary stored within the dictionary, `glove`, as key/value pairs. 
 
-Double-check that everything worked by getting the vector for a word from the `glove` dictionary. It's probably safe to assume that the word 'school' will be mentioned in at least one news headline, so let's get the vector for it. 
+Double-check that everything worked by getting the vector for a word from the `glove` dictionary. It's probably safe to assume that the word `'school'` will be mentioned in at least one news headline, so let's get the vector for it. 
 
 Get the vector for the word `'school'` from `glove` in the cell below. 
 
@@ -230,7 +227,7 @@ The code for a mean embedding vectorizer class is included below, with comments 
 class W2vVectorizer(object):
     
     def __init__(self, w2v):
-        # takes in a dictionary of words and vectors as input
+        # Takes in a dictionary of words and vectors as input
         self.w2v = w2v
         if len(w2v) == 0:
             self.dimensions = 0
@@ -238,7 +235,7 @@ class W2vVectorizer(object):
             self.dimensions = len(w2v[next(iter(glove))])
     
     # Note: Even though it doesn't do anything, it's required that this object implement a fit method or else
-    # it can't be used in a scikit-learn pipeline. 
+    # it can't be used in a scikit-learn pipeline  
     def fit(self, X, y):
         return self
             
@@ -262,11 +259,11 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import cross_val_score
 
-rf =  Pipeline([("Word2Vec Vectorizer", W2vVectorizer(glove)),
-              ("Random Forest", RandomForestClassifier(n_estimators=100, verbose=True))])
-svc = Pipeline([("Word2Vec Vectorizer", W2vVectorizer(glove)),
+rf =  Pipeline([('Word2Vec Vectorizer', W2vVectorizer(glove)),
+              ('Random Forest', RandomForestClassifier(n_estimators=100, verbose=True))])
+svc = Pipeline([('Word2Vec Vectorizer', W2vVectorizer(glove)),
                 ('Support Vector Machine', SVC())])
-lr = Pipeline([("Word2Vec Vectorizer", W2vVectorizer(glove)),
+lr = Pipeline([('Word2Vec Vectorizer', W2vVectorizer(glove)),
               ('Logistic Regression', LogisticRegression())])
 ```
 
@@ -275,13 +272,13 @@ Now, you'll create a list that contains a tuple for each pipeline, where the fir
 
 ```python
 models = [('Random Forest', rf),
-          ("Support Vector Machine", svc),
-          ("Logistic Regression", lr)]
+          ('Support Vector Machine', svc),
+          ('Logistic Regression', lr)]
 ```
 
-You can then use the list you've created above, as well as the `cross_val_score` function from scikit-learn to train all the models, and store their cross validation score in an array. 
+You can then use the list you've created above, as well as the `cross_val_score()` function from scikit-learn to train all the models, and store their cross validation scores in an array. 
 
-**_NOTE:_** Running the cell below may take a few minutes!
+**_NOTE:_** Running the cell below may take several minutes!
 
 
 ```python
@@ -329,13 +326,11 @@ These scores may seem pretty low, but remember that there are 41 possible catego
 
 ## Deep Learning With Word Embeddings
 
-To end, you'll see an example of how you can use an **_Embedding Layer_** inside of a Deep Neural Network to compute the own word embedding vectors on the fly, right inside the model! 
+To end, you'll see an example of how you can use an **_Embedding Layer_** inside of a deep neural network to compute your own word embedding vectors on the fly, right inside the model! 
 
-Don't worry if you don't understand the code below just yet&mdash;you'll be learning all about **_Sequence Models_** like the one below in the next section!
+Don't worry if you don't understand the code below just yet -- you'll be learning all about **_Sequence Models_** like the one below in the next section!
 
 Run the cells below.
-
-First, you'll import everything you'll need from Keras. 
 
 
 ```python
@@ -357,19 +352,19 @@ Next, you'll convert the labels to a one-hot encoded format.
 y = pd.get_dummies(target).values
 ```
 
-Now, you'll preprocess the text data. To do this, you start from the step where you combined the headlines and short description. You'll then use Keras's preprocessing tools to tokenize each example, convert them to sequences, and then pad the sequences so they're all the same length. 
+Now, you'll preprocess the text data. To do this, you start from the step where you combined the headlines and short description. You'll then use Keras' preprocessing tools to tokenize each example, convert them to sequences, and then pad the sequences so they're all the same length. 
 
-Note how during the tokenization step, you set a parameter to tell the tokenizer to limit the overall vocabulary size to the `20000` most important words. 
+Note how during the tokenization step, you set a parameter to tell the tokenizer to limit the overall vocabulary size to the 20000 most important words. 
 
 
 ```python
 tokenizer = text.Tokenizer(num_words=20000)
-tokenizer.fit_on_texts(list(df.combined_text))
-list_tokenized_headlines = tokenizer.texts_to_sequences(df.combined_text)
+tokenizer.fit_on_texts(list(df['combined_text']))
+list_tokenized_headlines = tokenizer.texts_to_sequences(df['combined_text'])
 X_t = sequence.pad_sequences(list_tokenized_headlines, maxlen=100)
 ```
 
-Now, construct the neural network. In the Embedding Layer, you specify the size you want the word vectors to be, as well as the size of the embedding space itself.  The embedding size you specified is 128, and the size of the embedding space is best as the size of the total vocabulary that we're using. Since you limited the vocabulary size to 20000, that's the size you choose for the embedding layer. 
+Now, construct the neural network. In the embedding layer, you specify the size you want the word vectors to be, as well as the size of the embedding space itself.  The embedding size you specified is 128, and the size of the embedding space is best as the size of the total vocabulary that we're using. Since you limited the vocabulary size to 20000, that's the size you choose for the embedding layer. 
 
 Once the data has passed through an embedding layer, you feed this data into an LSTM layer, followed by a Dense layer, followed by output layer. You also add some Dropout layers after each of these layers, to help fight overfitting.
 
@@ -396,7 +391,9 @@ Once you have designed the model, you still have to compile it, and provide impo
 
 
 ```python
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', 
+              optimizer='adam', 
+              metrics=['accuracy'])
 ```
 
 After compiling the model, you quickly check the summary of the model to see what the model looks like, and make sure the output shapes line up with what you expect. 
@@ -463,4 +460,4 @@ It's common to add embedding layers in LSTM networks, because both are special t
 
 ## Summary
 
-In this codealong, you used everything you know about word embeddings to perform text classification, and then you built a Multi-Layer Perceptron model that incorporated a word embedding layer in it's own architecture!
+In this codealong, you used everything you know about word embeddings to perform text classification, and then you built a multi-layer perceptron model that incorporated a word embedding layer in it's own architecture!
